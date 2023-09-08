@@ -1,7 +1,4 @@
-# NIDAQClient.py
-
 import numpy as np
-
 import nidaqmx
 from nidaqmx.stream_readers import AnalogMultiChannelReader
 from nidaqmx import constants
@@ -17,13 +14,10 @@ class NIDAQVoltage:
         self.position = position
 
         self.chans_in = 32        
-        
         self.sampling_freq_in = sampling_freq_in
         self.buffer_in_size = buffer_in_size
         self.buffer_in_size_cfg = round(self.buffer_in_size * 1)
-        
         self.bufsize_callback = self.buffer_in_size
-        
         self.task_in = nidaqmx.Task()
         self.configure_task()
         self.stream_in = AnalogMultiChannelReader(self.task_in.in_stream)
@@ -73,9 +67,7 @@ class NIDAQThermo:
         self.sampling_freq_in = sampling_freq_in
         self.buffer_in_size = buffer_in_size
         self.buffer_in_size_cfg = round(self.buffer_in_size * 1)
-        
         self.bufsize_callback = self.buffer_in_size
-        
         self.task_in = nidaqmx.Task()
         self.configure_task()
         self.stream_in = AnalogMultiChannelReader(self.task_in.in_stream)
@@ -104,5 +96,3 @@ class NIDAQThermo:
         
     def close(self):
         self.task_in.close()
-
-
