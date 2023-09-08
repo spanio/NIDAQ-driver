@@ -91,8 +91,8 @@ class NIDAQThermo:
         buffer_in = np.zeros((self.chans_in, 500))
         self.stream_in.read_many_sample(buffer_in, 500, timeout=constants.WAIT_INFINITELY)
         
-        # Calculate the RMS for each channel.
-        rms_values = np.mean(buffer_in, axis=1)
+        # average and round the values for each channel
+        rms_values = np.mean(buffer_in, axis=1)  #this is not actually RMS'd. just trust me bro
         rounded_values = np.round(rms_values, 2)
         return rounded_values
     
