@@ -19,7 +19,6 @@ daq.stop()
 daq.close()
 
 
-
 # Now, read a voltage sensor installed in the NI cage in position 4:
 daq = NIDAQVoltage(position=4)
 daq.start()

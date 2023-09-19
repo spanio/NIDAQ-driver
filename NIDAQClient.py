@@ -12,8 +12,8 @@ class NIDAQVoltage:
             raise ValueError("Invalid position value. Must be 1, 2, 3, or 4.")
         
         self.position = position
-
-        self.chans_in = 32        
+        self.chans_in = 32
+        self.channel_names = [f"Voltage Channel {i+1}" for i in range(self.chans_in)]
         self.sampling_freq_in = sampling_freq_in
         self.buffer_in_size = buffer_in_size
         self.buffer_in_size_cfg = round(self.buffer_in_size * 1)
@@ -37,6 +37,22 @@ class NIDAQVoltage:
         rms_values = np.sqrt(np.mean(buffer_in**2, axis=1))
         rounded_rms_values = np.round(rms_values, 5)
         return rounded_rms_values
+    
+    def get_channel_names(self):
+        return self.channel_names
+    
+    def set_channel_name(self, position, name):
+        """
+        Set the name of a specific channel based on its position.
+
+        Args:
+            position (int): Position of the channel (0-based index).
+            name (str): New name for the channel.
+        """
+        if position < 0 or position >= self.chans_in:
+            raise ValueError(f"Invalid position value. Must be between 0 and {self.chans_in-1}.")
+        self.channel_names[position] = name
+
     
     def start(self):
         self.task_in.start()
@@ -64,6 +80,7 @@ class NIDAQThermo:
         self.position = position
 
         self.chans_in = 8
+        self.channel_names = [f"Thermo Channel {i+1}" for i in range(self.chans_in)]
         self.sampling_freq_in = sampling_freq_in
         self.buffer_in_size = buffer_in_size
         self.buffer_in_size_cfg = round(self.buffer_in_size * 1)
@@ -87,6 +104,22 @@ class NIDAQThermo:
         rms_values = np.mean(buffer_in, axis=1)  #this is not actually RMS'd. just trust me bro
         rounded_values = np.round(rms_values, 2)
         return rounded_values
+    
+    def get_channel_names(self):
+        return self.channel_names
+    
+    def set_channel_name(self, position, name):
+        """
+        Set the name of a specific channel based on its position.
+
+        Args:
+            position (int): Position of the channel (0-based index).
+            name (str): New name for the channel.
+        """
+        if position < 0 or position >= self.chans_in:
+            raise ValueError(f"Invalid position value. Must be between 0 and {self.chans_in-1}.")
+        self.channel_names[position] = name
+
     
     def start(self):
         self.task_in.start()
