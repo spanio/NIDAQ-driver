@@ -65,7 +65,7 @@ class NIDAQVoltage:
 
 
 class NIDAQThermo:
-    def __init__(self, position, thermocouple_type='J', sampling_freq_in=50000, buffer_in_size=500):
+    def __init__(self, position, thermocouple_type='J', sampling_freq_in=50000, buffer_in_size=1000):
 
         # Check for valid position in the NI DAQ cage
         if position not in [1, 2, 3, 4]:
