@@ -5,7 +5,7 @@ from nidaqmx import constants
 from nidaqmx.constants import AcquisitionType, TemperatureUnits, ThermocoupleType, TerminalConfiguration
 
 class NIDAQVoltage:
-    def __init__(self, position, sampling_freq_in=5000, buffer_in_size=10000):
+    def __init__(self, position, sampling_freq_in=5000, buffer_in_size=20000):
 
         # Check for valid position in the NI DAQ cage
         if position not in [1, 2, 3, 4]:
@@ -65,7 +65,7 @@ class NIDAQVoltage:
 
 
 class NIDAQThermo:
-    def __init__(self, position, thermocouple_type='J', sampling_freq_in=50000, buffer_in_size=10000):
+    def __init__(self, position, thermocouple_type='J', sampling_freq_in=50000, buffer_in_size=20000):
 
         # Check for valid position in the NI DAQ cage
         if position not in [1, 2, 3, 4]:
