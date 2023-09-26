@@ -31,7 +31,7 @@ class NIDAQVoltage:
         
     def read_samples(self):
 
-        buffer_in = np.zeros((self.chans_in, 50000))
+        buffer_in = np.zeros((self.chans_in, 500))
         self.stream_in.read_many_sample(buffer_in, 500, timeout=constants.WAIT_INFINITELY)
         
         # Calculate the RMS for each channel.
@@ -101,7 +101,7 @@ class NIDAQThermo:
         
     def read_samples(self):
 
-        buffer_in = np.zeros((self.chans_in, 50000))
+        buffer_in = np.zeros((self.chans_in, 500))
         self.stream_in.read_many_sample(buffer_in, 500, timeout=constants.WAIT_INFINITELY)
    
         
