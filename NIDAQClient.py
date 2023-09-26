@@ -30,7 +30,7 @@ class NIDAQVoltage:
         self.task_in.in_stream.input_buf_size = self.bufsize_callback
         
     def read_samples(self):
-
+        self.configure_task()
         buffer_in = np.zeros((self.chans_in, 500))
         self.stream_in.read_many_sample(buffer_in, 500, timeout=constants.WAIT_INFINITELY)
         
@@ -100,7 +100,7 @@ class NIDAQThermo:
         self.task_in.in_stream.input_buf_size = self.bufsize_callback
         
     def read_samples(self):
-
+        self.configure_task()
         buffer_in = np.zeros((self.chans_in, 500))
         self.stream_in.read_many_sample(buffer_in, 500, timeout=constants.WAIT_INFINITELY)
    
