@@ -30,6 +30,7 @@ class NIDAQVoltage:
         self.task_in.in_stream.input_buf_size = self.bufsize_callback
         
     def read_samples(self):
+        self.start()
         buffer_in = np.zeros((self.chans_in, 500))
         self.stream_in.read_many_sample(buffer_in, 500, timeout=constants.WAIT_INFINITELY)
         
@@ -37,6 +38,9 @@ class NIDAQVoltage:
         rms_values = np.sqrt(np.mean(buffer_in**2, axis=1))
         rounded_rms_values = np.round(rms_values, 5)
         return rounded_rms_values
+    
+        self.stop()
+        self.close()
     
     def get_channel_names(self):
         return self.channel_names
@@ -97,6 +101,9 @@ class NIDAQThermo:
         self.task_in.in_stream.input_buf_size = self.bufsize_callback
         
     def read_samples(self):
+
+        self.start()
+
         buffer_in = np.zeros((self.chans_in, 500))
         self.stream_in.read_many_sample(buffer_in, 500, timeout=constants.WAIT_INFINITELY)
         
@@ -104,6 +111,9 @@ class NIDAQThermo:
         rms_values = np.mean(buffer_in, axis=1)  #this is not actually RMS'd. just trust me bro
         rounded_values = np.round(rms_values, 2)
         return rounded_values
+    
+        self.stop()
+        self.close()
     
     def get_channel_names(self):
         return self.channel_names
