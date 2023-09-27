@@ -5,6 +5,9 @@ from nidaqmx.stream_readers import AnalogMultiChannelReader
 from nidaqmx import constants
 from nidaqmx.constants import AcquisitionType, TemperatureUnits, ThermocoupleType, TerminalConfiguration
 
+import os
+from datetime import datetime
+
 class NIDAQVoltage:
     def __init__(self, position, sampling_freq_in=500, buffer_in_size=5000):
 
@@ -36,7 +39,26 @@ class NIDAQVoltage:
         try:
             self.stream_in.read_many_sample(buffer_in, 500, timeout=constants.WAIT_INFINITELY)
         except nidaqmx.errors.DaqError as e:
-            print(f"Error occured: {e}")
+            # Get the current timestamp
+            timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            
+            error_message = f"Error occurred: {e}"
+            log_message = f"{timestamp} - {error_message}"
+            
+            print(log_message)
+            
+            # Get the current script's directory
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            
+            # Get the parent directory
+            parent_dir = os.path.dirname(current_dir)
+            
+            # Create a path for the error log file in the parent directory
+            error_file_path = os.path.join(parent_dir, 'error_log.txt')
+            
+            # Write the log message (timestamp + error) to the file
+            with open(error_file_path, 'a') as file:
+                file.write(f"{log_message}\n")
 
         # Calculate the RMS for each channel.
         rms_values = np.sqrt(np.mean(buffer_in**2, axis=1))
@@ -105,7 +127,29 @@ class NIDAQThermo:
         
     def read_samples(self):
         buffer_in = np.zeros((self.chans_in, 500))
-        self.stream_in.read_many_sample(buffer_in, 500, timeout=constants.WAIT_INFINITELY)
+        try:
+            self.stream_in.read_many_sample(buffer_in, 500, timeout=constants.WAIT_INFINITELY)
+        except nidaqmx.errors.DaqError as e:
+            # Get the current timestamp
+            timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            
+            error_message = f"Error occurred: {e}"
+            log_message = f"{timestamp} - {error_message}"
+            
+            print(log_message)
+            
+            # Get the current script's directory
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            
+            # Get the parent directory
+            parent_dir = os.path.dirname(current_dir)
+            
+            # Create a path for the error log file in the parent directory
+            error_file_path = os.path.join(parent_dir, 'error_log.txt')
+            
+            # Write the log message (timestamp + error) to the file
+            with open(error_file_path, 'a') as file:
+                file.write(f"{log_message}\n")
    
         
         # average and round the values for each channel
