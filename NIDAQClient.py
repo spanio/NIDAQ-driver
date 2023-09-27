@@ -1,5 +1,6 @@
 import numpy as np
 import nidaqmx
+import nidaqmx.errors
 from nidaqmx.stream_readers import AnalogMultiChannelReader
 from nidaqmx import constants
 from nidaqmx.constants import AcquisitionType, TemperatureUnits, ThermocoupleType, TerminalConfiguration
@@ -31,8 +32,12 @@ class NIDAQVoltage:
         
     def read_samples(self):
         buffer_in = np.zeros((self.chans_in, 500))
-        self.stream_in.read_many_sample(buffer_in, 500, timeout=constants.WAIT_INFINITELY)
-        
+
+        try:
+            self.stream_in.read_many_sample(buffer_in, 500, timeout=constants.WAIT_INFINITELY)
+        except nidaqmx.errors.DaqError as e:
+            print(f"Error occured: {e}")
+
         # Calculate the RMS for each channel.
         rms_values = np.sqrt(np.mean(buffer_in**2, axis=1))
         rounded_rms_values = np.round(rms_values, 5)
