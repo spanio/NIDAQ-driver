@@ -1,0 +1,9 @@
+README.md
+setup.py
+NIDAQ-Driver/NIDAQClient.py
+NIDAQ-Driver/__init__.py
+NIDAQ_driver.egg-info/PKG-INFO
+NIDAQ_driver.egg-info/SOURCES.txt
+NIDAQ_driver.egg-info/dependency_links.txt
+NIDAQ_driver.egg-info/requires.txt
+NIDAQ_driver.egg-info/top_level.txt
