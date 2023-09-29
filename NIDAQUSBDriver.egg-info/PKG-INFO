@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
-Name: NIDAQClient
-Version: 0.4.0
+Name: NIDAQUSBDriver
+Version: 0.11.0
 Summary: Library for interfacing with NIDAQ devices
 Home-page: https://github.com/spanio/NIDAQ-driver
 Author: Brian Benchoff

@@ -1,7 +1,7 @@
 # NIDAQTest.py
 
-from NIDAQClient import NIDAQVoltage
-from NIDAQClient import NIDAQThermo
+from NIDAQUSBDriver.NIDAQClient import NIDAQThermo
+from NIDAQUSBDriver.NIDAQClient import NIDAQVoltage
 
 # Create an instance of the client for thermocouple reading.
 # This thermocouple module is installed in position 2 in the NI DAQ cage:

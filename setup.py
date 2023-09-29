@@ -1,8 +1,8 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='NIDAQClient', 
-    version='0.4.0',
+    name='NIDAQUSBDriver', 
+    version='0.11.0',
     description='Library for interfacing with NIDAQ devices',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',

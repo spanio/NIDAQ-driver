@@ -1,12 +1,23 @@
 # NIDAQ-driver
  Python library for NI DAQ modules
 
-To use, include NIDAQClient.py in your project.
+# Installation
+
+```
+pip install NIDAQUSBDriver
+```
+
+Import the library into your project with:
+
+```python
+from NIDAQUSBDriver.NIDAQClient import NIDAQThermo
+from NIDAQUSBDriver.NIDAQClient import NIDAQVoltage
+```
 
 # Example
 ```python
-from NIDAQClient import NIDAQVoltage
-from NIDAQClient import NIDAQThermo
+from NIDAQUSBDriver.NIDAQClient import NIDAQThermo
+from NIDAQUSBDriver.NIDAQClient import NIDAQVoltage
 
 # Create an instance of the client for thermocouple reading.
 # This thermocouple module is installed in position 2 in the NI DAQ cage:
