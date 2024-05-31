@@ -43,7 +43,7 @@ class NIDAQEthernetVoltage:
             self.stream_in.read_many_sample(buffer_in, 500, timeout=nidaqmx.constants.WAIT_INFINITELY)
         except nidaqmx.errors.DaqError as e:
             # Get the current timestamp
-            timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             
             error_message = f"Error occurred: {e}"
             log_message = f"{timestamp} - {error_message}"
