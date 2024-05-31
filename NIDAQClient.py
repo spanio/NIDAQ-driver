@@ -9,7 +9,7 @@ import os
 from datetime import datetime
 
 class NIDAQEthernetVoltage:
-    def __init__(self, position, sampling_freq_in=500, buffer_in_size=5000):
+    def __init__(self, position, device, sampling_freq_in=500, buffer_in_size=5000):
         # Check for valid position in the NI DAQ cage
         if position not in [1, 2, 3, 4]:
             raise ValueError("Invalid position value. Must be 1, 2, 3, or 4.")
@@ -22,7 +22,7 @@ class NIDAQEthernetVoltage:
         self.buffer_in_size_cfg = round(self.buffer_in_size * 1)
         self.bufsize_callback = self.buffer_in_size
         self.task_in = nidaqmx.Task()
-        self.device =  ""
+        self.device =  device
         self.configure_task()
         self.stream_in = nidaqmx.stream_readers.AnalogMultiChannelReader(self.task_in.in_stream)
         self.buffer_in = np.zeros((self.chans_in, self.buffer_in_size))
