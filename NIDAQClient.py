@@ -86,7 +86,7 @@ class NIDAQEthernetVoltage:
         self.task_in.close()
 
 class NIDAQUSBVoltage:
-    def __init__(self, position, sampling_freq_in=500, buffer_in_size=5000):
+    def __init__(self, position, device, sampling_freq_in=500, buffer_in_size=5000):
 
         # Check for valid position in the NI DAQ cage
         if position not in [1, 2, 3, 4]:
@@ -100,12 +100,13 @@ class NIDAQUSBVoltage:
         self.buffer_in_size_cfg = round(self.buffer_in_size * 1)
         self.bufsize_callback = self.buffer_in_size
         self.task_in = nidaqmx.Task()
+        self.device = device
         self.configure_task()
         self.stream_in = AnalogMultiChannelReader(self.task_in.in_stream)
         self.buffer_in = np.zeros((self.chans_in, self.buffer_in_size))
         
     def configure_task(self):
-        channel_string = f"cDAQ1Mod{self.position}/ai0:31"
+        channel_string = self.device + "/ai0:31"
         self.task_in.ai_channels.add_ai_voltage_chan(channel_string, terminal_config=TerminalConfiguration.NRSE)
         self.task_in.timing.cfg_samp_clk_timing(rate=self.sampling_freq_in, sample_mode=constants.AcquisitionType.CONTINUOUS, samps_per_chan=self.buffer_in_size_cfg)
         self.task_in.in_stream.input_buf_size = self.bufsize_callback
@@ -172,7 +173,7 @@ class NIDAQUSBVoltage:
 
 
 class NIDAQUSBThermo:
-    def __init__(self, position, thermocouple_type='J', sampling_freq_in=500, buffer_in_size=5000):
+    def __init__(self, position, device, thermocouple_type='J', sampling_freq_in=500, buffer_in_size=5000):
 
         # Check for valid position in the NI DAQ cage
         if position not in [1, 2, 3, 4]:
@@ -193,12 +194,13 @@ class NIDAQUSBThermo:
         self.buffer_in_size_cfg = round(self.buffer_in_size * 1)
         self.bufsize_callback = self.buffer_in_size
         self.task_in = nidaqmx.Task()
+        self.device = device
         self.configure_task()
         self.stream_in = AnalogMultiChannelReader(self.task_in.in_stream)
         self.buffer_in = np.zeros((self.chans_in, self.buffer_in_size))
         
     def configure_task(self):
-        channel_string = f"cDAQ1Mod{self.position}/ai0:7"
+        channel_string = self.device + "/ai0:7"
         self.task_in.ai_channels.add_ai_thrmcpl_chan(channel_string, units=TemperatureUnits.DEG_C, thermocouple_type=self.thermocouple_type)
         self.task_in.timing.cfg_samp_clk_timing(rate=self.sampling_freq_in, sample_mode=constants.AcquisitionType.CONTINUOUS, samps_per_chan=self.buffer_in_size_cfg)
         self.task_in.in_stream.input_buf_size = self.bufsize_callback
