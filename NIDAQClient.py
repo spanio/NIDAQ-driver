@@ -32,8 +32,8 @@ class NIDAQEthernetVoltage:
         #if channel_string.split('/')[0] not in available_devices:
         #    raise ValueError(f"Device identifier {channel_string} is invalid. Available devices: {available_devices}")
 
-        self.task_in.ai_channels.add_ai_voltage_chan(channel_string, terminal_config=nidaqmx.constants.TerminalConfiguration.NRSE)
-        self.task_in.timing.cfg_samp_clk_timing(rate=self.sampling_freq_in, sample_mode=nidaqmx.constants.AcquisitionType.CONTINUOUS, samps_per_chan=self.buffer_in_size_cfg)
+        self.task_in.ai_channels.add_ai_voltage_chan(channel_string, terminal_config=TerminalConfiguration.NRSE)
+        self.task_in.timing.cfg_samp_clk_timing(rate=self.sampling_freq_in, sample_mode=constants.AcquisitionType.CONTINUOUS, samps_per_chan=self.buffer_in_size_cfg)
         self.task_in.in_stream.input_buf_size = self.bufsize_callback
 
     def read_samples(self):
