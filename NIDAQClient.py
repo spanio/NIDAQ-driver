@@ -9,7 +9,7 @@ import os
 from datetime import datetime
 
 class NIDAQVoltage:
-    def __init__(self, position, device, sampling_freq_in=500, buffer_in_size=5000):
+    def __init__(self, position, device, sampling_freq_in=5000, buffer_in_size=20000):
         # Check for valid position in the NI DAQ cage
         if position not in [1, 2, 3, 4]:
             raise ValueError("Invalid position value. Must be 1, 2, 3, or 4.")
