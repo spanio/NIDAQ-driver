@@ -9,7 +9,7 @@ import os
 from datetime import datetime
 
 class NIDAQVoltage:
-    def __init__(self, position, device, sampling_freq_in=5000, buffer_in_size=20000):
+    def __init__(self, position, device, sampling_freq_in=5000, buffer_in_size=20000, terminal_config='NRSE', acquisition_type='CONTINUOUS'):
         # Check for valid position in the NI DAQ cage
         if position not in [1, 2, 3, 4]:
             raise ValueError("Invalid position value. Must be 1, 2, 3, or 4.")
@@ -23,24 +23,23 @@ class NIDAQVoltage:
         self.bufsize_callback = self.buffer_in_size
         self.task_in = nidaqmx.Task()
         self.device =  device
+        self.terminal_config = getattr(TerminalConfiguration, terminal_config)
+        self.acquisition_type = getattr(AcquisitionType, acquisition_type)
         self.configure_task()
         self.stream_in = nidaqmx.stream_readers.AnalogMultiChannelReader(self.task_in.in_stream)
         self.buffer_in = np.zeros((self.chans_in, self.buffer_in_size))
 
     def configure_task(self):
         channel_string = self.device + "/ai0:31"
-        #if channel_string.split('/')[0] not in available_devices:
-        #    raise ValueError(f"Device identifier {channel_string} is invalid. Available devices: {available_devices}")
-
-        self.task_in.ai_channels.add_ai_voltage_chan(channel_string, terminal_config=TerminalConfiguration.NRSE)
-        self.task_in.timing.cfg_samp_clk_timing(rate=self.sampling_freq_in, sample_mode=constants.AcquisitionType.CONTINUOUS, samps_per_chan=self.buffer_in_size_cfg)
+        self.task_in.ai_channels.add_ai_voltage_chan(channel_string, terminal_config=self.terminal_config)
+        self.task_in.timing.cfg_samp_clk_timing(rate=self.sampling_freq_in, sample_mode=self.acquisition_type, samps_per_chan=self.buffer_in_size_cfg)
         self.task_in.in_stream.input_buf_size = self.bufsize_callback
 
-    def read_samples(self):
-        buffer_in = np.zeros((self.chans_in, 500))
+    def read_samples(self, num_samples=500):
+        buffer_in = np.zeros((self.chans_in, num_samples))
 
         try:
-            self.stream_in.read_many_sample(buffer_in, 500, timeout=nidaqmx.constants.WAIT_INFINITELY)
+            self.stream_in.read_many_sample(buffer_in, num_samples, timeout=nidaqmx.constants.WAIT_INFINITELY)
         except nidaqmx.errors.DaqError as e:
             # Get the current timestamp
             timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -87,13 +86,13 @@ class NIDAQVoltage:
 
 
 class NIDAQThermo:
-    def __init__(self, position, device, thermocouple_type='J', sampling_freq_in=500, buffer_in_size=5000):
+    def __init__(self, position, device, thermocouple_type='J', sampling_freq_in=500, buffer_in_size=5000, acquisition_type='CONTINUOUS'):
 
         # Check for valid position in the NI DAQ cage
         if position not in [1, 2, 3, 4]:
             raise ValueError("Invalid position value. Must be 1, 2, 3, or 4.")
         
-         # Check for valid thermocouple type
+        # Check for valid thermocouple type
         allowed_thermocouple_types = ['B', 'E', 'J', 'K', 'N', 'R', 'S', 'T']
         if thermocouple_type not in allowed_thermocouple_types:
             raise ValueError(f"Invalid thermocouple type. Must be one of {allowed_thermocouple_types}.")
@@ -109,6 +108,7 @@ class NIDAQThermo:
         self.bufsize_callback = self.buffer_in_size
         self.task_in = nidaqmx.Task()
         self.device = device
+        self.acquisition_type = getattr(AcquisitionType, acquisition_type)
         self.configure_task()
         self.stream_in = AnalogMultiChannelReader(self.task_in.in_stream)
         self.buffer_in = np.zeros((self.chans_in, self.buffer_in_size))
@@ -116,13 +116,13 @@ class NIDAQThermo:
     def configure_task(self):
         channel_string = self.device + "/ai0:7"
         self.task_in.ai_channels.add_ai_thrmcpl_chan(channel_string, units=TemperatureUnits.DEG_C, thermocouple_type=self.thermocouple_type)
-        self.task_in.timing.cfg_samp_clk_timing(rate=self.sampling_freq_in, sample_mode=constants.AcquisitionType.CONTINUOUS, samps_per_chan=self.buffer_in_size_cfg)
+        self.task_in.timing.cfg_samp_clk_timing(rate=self.sampling_freq_in, sample_mode=self.acquisition_type, samps_per_chan=self.buffer_in_size_cfg)
         self.task_in.in_stream.input_buf_size = self.bufsize_callback
         
-    def read_samples(self):
-        buffer_in = np.zeros((self.chans_in, 500))
+    def read_samples(self, num_samples=500):
+        buffer_in = np.zeros((self.chans_in, num_samples))
         try:
-            self.stream_in.read_many_sample(buffer_in, 500, timeout=constants.WAIT_INFINITELY)
+            self.stream_in.read_many_sample(buffer_in, num_samples, timeout=constants.WAIT_INFINITELY)
         except nidaqmx.errors.DaqError as e:
             # Get the current timestamp
             timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -151,8 +151,6 @@ class NIDAQThermo:
         rounded_values = np.round(rms_values, 2)
         return rounded_values
     
-
-    
     def get_channel_names(self):
         return self.channel_names
     
@@ -177,4 +175,3 @@ class NIDAQThermo:
         
     def close(self):
         self.task_in.close()
-
