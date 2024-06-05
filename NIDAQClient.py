@@ -45,6 +45,10 @@ class NIDAQVoltage:
                 if total_samples_acquired < num_samples:
                     num_samples = total_samples_acquired
 
+                if num_samples == 0:
+                    print("No samples available to read.")
+                    return np.zeros(self.chans_in)  # Return an array of zeros with length equal to the number of channels
+
                 self.buffer_in.fill(0)  # Zero the buffer
             self.stream_in.read_many_sample(buffer_in, num_samples, timeout=nidaqmx.constants.WAIT_INFINITELY)
         except nidaqmx.errors.DaqError as e:
@@ -73,7 +77,6 @@ class NIDAQVoltage:
         rms_values = np.sqrt(np.mean(buffer_in**2, axis=1))
         rounded_rms_values = np.round(rms_values, 5)
         return rounded_rms_values
-    
     
     def get_channel_names(self):
         return self.channel_names
@@ -135,6 +138,10 @@ class NIDAQThermo:
                 total_samples_acquired = self.task_in.in_stream.avail_samp_per_chan
                 if total_samples_acquired < num_samples:
                     num_samples = total_samples_acquired
+
+                if num_samples == 0:
+                    print("No samples available to read.")
+                    return np.zeros(self.chans_in)  # Return an array of zeros with length equal to the number of channels
 
                 self.buffer_in.fill(0)  # Zero the buffer
             self.stream_in.read_many_sample(buffer_in, num_samples, timeout=constants.WAIT_INFINITELY)
