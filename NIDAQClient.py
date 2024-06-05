@@ -40,6 +40,11 @@ class NIDAQVoltage:
 
         try:
             if self.acquisition_type == AcquisitionType.FINITE:
+                # Query the total number of samples acquired
+                total_samples_acquired = self.task_in.in_stream.avail_samp_per_chan
+                if total_samples_acquired < num_samples:
+                    num_samples = total_samples_acquired
+
                 self.buffer_in.fill(0)  # Zero the buffer
             self.stream_in.read_many_sample(buffer_in, num_samples, timeout=nidaqmx.constants.WAIT_INFINITELY)
         except nidaqmx.errors.DaqError as e:
@@ -68,6 +73,7 @@ class NIDAQVoltage:
         rms_values = np.sqrt(np.mean(buffer_in**2, axis=1))
         rounded_rms_values = np.round(rms_values, 5)
         return rounded_rms_values
+    
     
     def get_channel_names(self):
         return self.channel_names
@@ -125,6 +131,11 @@ class NIDAQThermo:
         buffer_in = np.zeros((self.chans_in, num_samples))
         try:
             if self.acquisition_type == AcquisitionType.FINITE:
+                # Query the total number of samples acquired
+                total_samples_acquired = self.task_in.in_stream.avail_samp_per_chan
+                if total_samples_acquired < num_samples:
+                    num_samples = total_samples_acquired
+
                 self.buffer_in.fill(0)  # Zero the buffer
             self.stream_in.read_many_sample(buffer_in, num_samples, timeout=constants.WAIT_INFINITELY)
         except nidaqmx.errors.DaqError as e:
@@ -148,7 +159,6 @@ class NIDAQThermo:
             # Write the log message (timestamp + error) to the file
             with open(error_file_path, 'a') as file:
                 file.write(f"{log_message}\n")
-   
         
         # average and round the values for each channel
         rms_values = np.mean(buffer_in, axis=1)  #this is not actually RMS'd. just trust me bro
