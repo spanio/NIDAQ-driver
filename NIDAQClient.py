@@ -39,6 +39,8 @@ class NIDAQVoltage:
         buffer_in = np.zeros((self.chans_in, num_samples))
 
         try:
+            if self.acquisition_type == AcquisitionType.FINITE:
+                self.buffer_in.fill(0)  # Zero the buffer
             self.stream_in.read_many_sample(buffer_in, num_samples, timeout=nidaqmx.constants.WAIT_INFINITELY)
         except nidaqmx.errors.DaqError as e:
             # Get the current timestamp
@@ -122,6 +124,8 @@ class NIDAQThermo:
     def read_samples(self, num_samples=500):
         buffer_in = np.zeros((self.chans_in, num_samples))
         try:
+            if self.acquisition_type == AcquisitionType.FINITE:
+                self.buffer_in.fill(0)  # Zero the buffer
             self.stream_in.read_many_sample(buffer_in, num_samples, timeout=constants.WAIT_INFINITELY)
         except nidaqmx.errors.DaqError as e:
             # Get the current timestamp
