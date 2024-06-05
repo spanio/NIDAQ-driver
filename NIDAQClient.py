@@ -46,7 +46,8 @@ class NIDAQVoltage:
                     num_samples = total_samples_acquired
 
                 if num_samples == 0:
-                    print("No samples available to read.")
+                    print("No samples available to read. Reinitializing the task.")
+                    self.reinitialize()
                     return np.zeros(self.chans_in)  # Return an array of zeros with length equal to the number of channels
 
                 self.buffer_in.fill(0)  # Zero the buffer
@@ -94,6 +95,13 @@ class NIDAQVoltage:
         
     def close(self):
         self.task_in.close()
+    
+    def reinitialize(self):
+        self.stop()
+        self.close()
+        self.task_in = nidaqmx.Task()
+        self.configure_task()
+        self.start()
 
 
 class NIDAQThermo:
@@ -140,7 +148,8 @@ class NIDAQThermo:
                     num_samples = total_samples_acquired
 
                 if num_samples == 0:
-                    print("No samples available to read.")
+                    print("No samples available to read. Reinitializing the task.")
+                    self.reinitialize()
                     return np.zeros(self.chans_in)  # Return an array of zeros with length equal to the number of channels
 
                 self.buffer_in.fill(0)  # Zero the buffer
@@ -196,3 +205,10 @@ class NIDAQThermo:
         
     def close(self):
         self.task_in.close()
+    
+    def reinitialize(self):
+        self.stop()
+        self.close()
+        self.task_in = nidaqmx.Task()
+        self.configure_task()
+        self.start()
