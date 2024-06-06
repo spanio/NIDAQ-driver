@@ -9,7 +9,7 @@ import os
 from datetime import datetime
 
 class NIDAQVoltage:
-    def __init__(self, position, device, sampling_freq_in=5000, buffer_in_size=20000, terminal_config='NRSE', acquisition_type='CONTINUOUS'):
+    def __init__(self, position, device, sampling_freq_in=5000, buffer_in_size=20000, terminal_config='NRSE', acquisition_type='FINITE'):
         # Check for valid position in the NI DAQ cage
         if position not in [1, 2, 3, 4]:
             raise ValueError("Invalid position value. Must be 1, 2, 3, or 4.")
@@ -105,7 +105,7 @@ class NIDAQVoltage:
 
 
 class NIDAQThermo:
-    def __init__(self, position, device, thermocouple_type='J', sampling_freq_in=500, buffer_in_size=5000, acquisition_type='CONTINUOUS'):
+    def __init__(self, position, device, thermocouple_type='J', sampling_freq_in=500, buffer_in_size=5000, acquisition_type='FINITE'):
 
         # Check for valid position in the NI DAQ cage
         if position not in [1, 2, 3, 4]:
